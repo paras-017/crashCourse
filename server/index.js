@@ -9,7 +9,7 @@ const port = 8000
 async function startServer(){
     const app = express()
     const server = new ApolloServer({
-    //If you want to fetch anything from 'graphQL' server you have to query it  and for sending yout have use 'mutation'
+    //If you want to fetch anything from 'graphQL' server you have to `Query` it  and for sending yout have use `mutation`
         typeDefs:`
             type User {
                 id: ID!
@@ -20,19 +20,25 @@ async function startServer(){
                 website: String!
             }
 
-             type Todo{
-                id: ID!,
-                title: String,
+            type Todo{
+                id: ID!
+                title: String
                 completed: Boolean
+                userId: ID
+                user: User
              }
            
-             type Query{
+            type Query{
                 getTodos: [Todo]
                 getAllUsers: [User]
                 getUser(id:ID!): User
              }
         `,
         resolvers:{
+            // if someone try to fetch user of Todo
+            Todo:{
+                user: async(todo)=>(await axios.get(`https://jsonplaceholder.typicode.com/users/${todo.id}`)).data
+            },
             Query:{
                 getTodos: async()=> (await axios.get('https://jsonplaceholder.typicode.com/todos')).data,
                 getAllUsers: async()=> (await axios.get('https://jsonplaceholder.typicode.com/users')).data,
