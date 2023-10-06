@@ -24,7 +24,7 @@ async function startServer(){
                 id: ID!
                 title: String
                 completed: Boolean
-                userId: ID
+                userId: ID!
                 user: User
              }
            
